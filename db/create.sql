@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS items;
-
-CREATE TABLE items (
+CREATE TABLE TABLE IF NOT EXISTS items (
     id serial primary key,
     name text
 );
