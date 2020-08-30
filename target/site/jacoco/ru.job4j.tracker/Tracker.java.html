@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tracker.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tracker</a> &gt; <a href="index.source.html" class="el_package">ru.job4j.tracker</a> &gt; <span class="el_source">Tracker.java</span></div><h1>Tracker.java</h1><pre class="source lang-java linenums">package ru.job4j.tracker;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+import static java.lang.Math.abs;
+
+<span class="fc" id="L10">public class Tracker {</span>
+    /**
+     * Массив для хранения заявок.
+     */
+<span class="fc" id="L14">    private final List&lt;Item&gt; items = new ArrayList&lt;&gt;();</span>
+    /**
+     * Метод добавления заявки в хранилище
+     * @param item новая заявка
+     */
+    public Item add(Item item) {
+<span class="fc" id="L20">        item.setId(generateId());</span>
+<span class="fc" id="L21">        items.add(item);</span>
+<span class="fc" id="L22">        return item;</span>
+    }
+
+    /**
+     * Метод генерирует уникальный ключ для заявки.
+     * Так как у заявки нет уникальности полей, имени и описание. Для идентификации нам нужен уникальный ключ.
+     * @return Уникальный ключ.
+     */
+    private String generateId() {
+<span class="fc" id="L31">        Random rm = new Random(System.nanoTime());</span>
+<span class="fc" id="L32">        return String.valueOf(abs(rm.nextLong()));</span>
+    }
+
+    private int indexOf(String id) {
+<span class="fc" id="L36">        int rsl = -1;</span>
+<span class="pc bfc" id="L37" title="All 2 branches covered.">        for (int index = 0; index &lt; items.size(); index++) {</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">            if (items.get(index).getId().equals(id)) {</span>
+<span class="fc" id="L39">                rsl = index;</span>
+<span class="fc" id="L40">                break;</span>
+            }
+        }
+<span class="fc" id="L43">        return rsl;</span>
+    }
+
+    public List&lt;Item&gt; findAll() {
+<span class="fc" id="L47">        return new ArrayList&lt;&gt;(items);</span>
+    }
+
+    public List&lt;Item&gt; findByName(String key) {
+<span class="fc" id="L51">        ArrayList&lt;Item&gt; newArray = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (Item item : items) {</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (item.getName().equals(key)) {</span>
+<span class="fc" id="L54">                newArray.add(item);</span>
+            }
+<span class="fc" id="L56">        }</span>
+<span class="fc" id="L57">        return newArray;</span>
+    }
+
+    public Item findById(String id) {
+<span class="fc" id="L61">        int index = indexOf(id);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        return index != -1 ? items.get(index) : null;</span>
+    }
+
+    public boolean replace(String id, Item item) {
+<span class="fc" id="L66">        boolean result = false;</span>
+<span class="fc" id="L67">        int index = indexOf(id);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (index != -1) {</span>
+<span class="fc" id="L69">            item.setId(id);</span>
+<span class="fc" id="L70">            items.set(index, item);</span>
+<span class="fc" id="L71">            result = true;</span>
+        }
+<span class="fc" id="L73">        return result;</span>
+    }
+
+    public boolean delete(String id) {
+<span class="fc" id="L77">        boolean result = false;</span>
+<span class="fc" id="L78">        int index = indexOf(id);</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (index != -1) {</span>
+<span class="fc" id="L80">            items.remove(index);</span>
+<span class="fc" id="L81">            result = true;</span>
+        }
+<span class="fc" id="L83">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
