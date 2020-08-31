@@ -7,17 +7,22 @@ import java.util.Random;
 
 import static java.lang.Math.abs;
 
-public class Tracker {
+public class MemTracker implements Store {
     /**
      * Массив для хранения заявок.
      */
     private final List<Item> items = new ArrayList<>();
+
+    @Override
+    public void init() {
+
+    }
+
     /**
      * Метод добавления заявки в хранилище
      * @param item новая заявка
      */
     public Item add(Item item) {
-        item.setId(generateId());
         items.add(item);
         return item;
     }
@@ -27,7 +32,7 @@ public class Tracker {
      * Так как у заявки нет уникальности полей, имени и описание. Для идентификации нам нужен уникальный ключ.
      * @return Уникальный ключ.
      */
-    private String generateId() {
+    public String generateId() {
         Random rm = new Random(System.nanoTime());
         return String.valueOf(abs(rm.nextLong()));
     }
@@ -64,9 +69,9 @@ public class Tracker {
 
     public boolean replace(String id, Item item) {
         boolean result = false;
+        item = new Item(id, item);
         int index = indexOf(id);
         if (index != -1) {
-            item.setId(id);
             items.set(index, item);
             result = true;
         }
@@ -81,5 +86,15 @@ public class Tracker {
             result = true;
         }
         return result;
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public void clear() {
+        items.clear();
     }
 }

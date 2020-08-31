@@ -10,7 +10,7 @@ public class StartUI {
 
     private static final Logger LOG = LoggerFactory.getLogger(StartUI.class);
 
-    public void init(Input input, Tracker tracker, List<UserAction> actions) {
+    public void init(Input input, Store tracker, List<UserAction> actions) {
         boolean run = true;
         LOG.info("Started");
         while (run) {
@@ -30,17 +30,23 @@ public class StartUI {
     }
 
     public static void main(String[] args) {
-        Input validate = new ValidateInput(new ConsoleInput());
-        Tracker tracker = new Tracker();
+        Input validate = new ValidateInput(
+                new ConsoleInput()
+        );
+        try (Store tracker = new SqlTracker()) {
+            tracker.init();
 
-        new StartUI().init(validate, tracker, new ArrayList<>(List.of(
-                new CreateAction(),
-                new ReplaceAction(),
-                new DeleteAction(),
-                new FindAllAction(),
-                new FindByIdAction(),
-                new FindByNameAction(),
-                new ExitAction()
-        )));
+            new StartUI().init(validate, tracker, new ArrayList<>(List.of(
+                    new CreateAction(),
+                    new ReplaceAction(),
+                    new DeleteAction(),
+                    new FindAllAction(),
+                    new FindByIdAction(),
+                    new FindByNameAction(),
+                    new ExitAction()
+            )));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
