@@ -49,11 +49,11 @@ public class FindAllActionTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintStream def = System.out;
         System.setOut(new PrintStream(out));
-        Item item = new Item(tracker.generateId(), "fix bug");
+        Item item = new Item("fix bug");
         tracker.add(item);
-        Item item2 = new Item(tracker.generateId(), "bla-bla");
+        Item item2 = new Item("bla-bla");
         tracker.add(item2);
-        Item item3 = new Item(tracker.generateId(), "don't jump you might fall");
+        Item item3 = new Item("don't jump you might fall");
         tracker.add(item3);
         FindAllAction act = new FindAllAction();
         act.execute(new StubInput(new String[] {}), tracker);

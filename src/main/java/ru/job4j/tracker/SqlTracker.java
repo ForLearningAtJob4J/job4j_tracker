@@ -30,22 +30,6 @@ public class SqlTracker implements Store {
     }
 
     @Override
-    public String generateId() {
-        Statement st;
-        try {
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT nextval('public.items_id_seq')");
-            if (rs.next()) {
-                return rs.getString(1);
-            }
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-        }
-
-        return null;
-    }
-
-    @Override
     public void close() throws Exception {
         if (cn != null) {
             cn.close();
@@ -55,13 +39,16 @@ public class SqlTracker implements Store {
     @Override
     public Item add(Item aItem) {
         PreparedStatement st;
-        Item item = new Item(aItem.getId() == null ? generateId() : aItem.getId(), aItem.getName());
+//        Item item = new Item(aItem.getId() == null ? generateId() : aItem.getId(), aItem.getName());
         try {
-            st = cn.prepareStatement("INSERT INTO items (id, name) values (?, ?)");
-            st.setInt(1, Integer.parseInt(item.getId()));
-            st.setString(2, item.getName());
+            st = cn.prepareStatement("INSERT INTO items (name) values (?)", Statement.RETURN_GENERATED_KEYS);
+            st.setString(1, aItem.getName());
             st.executeUpdate();
-            return item;
+            ResultSet rs  = st.getGeneratedKeys();
+            if (rs.next()) {
+                aItem.setId(rs.getString(1));
+            }
+            return aItem;
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -105,7 +92,9 @@ public class SqlTracker implements Store {
             st = cn.prepareStatement("SELECT id, name FROM items");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                res.add(new Item(rs.getString(1), rs.getString(2)));
+                Item i = new Item(rs.getString(2));
+                i.setId(rs.getString(1));
+                res.add(i);
             }
             return res;
         } catch (SQLException e) {
@@ -123,7 +112,9 @@ public class SqlTracker implements Store {
             st.setString(1, key);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                res.add(new Item(rs.getString(1), rs.getString(2)));
+                Item i = new Item(rs.getString(2));
+                i.setId(rs.getString(1));
+                res.add(i);
             }
             return res;
         } catch (SQLException e) {
@@ -140,7 +131,9 @@ public class SqlTracker implements Store {
             st.setInt(1, Integer.parseInt(id));
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                return new Item(rs.getString("id"), rs.getString("name"));
+                Item i = new Item(rs.getString("name"));
+                i.setId(rs.getString("id"));
+                return i;
             }
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);

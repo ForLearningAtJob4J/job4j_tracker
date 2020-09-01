@@ -14,9 +14,9 @@ public class ItemByNameAscComparatorTest {
     @Test
     public void compare() {
         ArrayList<Item> list = new ArrayList<>(List.of(
-                new Item("1", "Second"),
-                new Item("2", "First"),
-                new Item("3", "Third")));
+                new Item("Second"),
+                new Item("First"),
+                new Item("Third")));
         list.sort(new ItemByNameAscComparator());
         assertThat(new String[]{list.get(0).getName(), list.get(1).getName(), list.get(2).getName()},
                 is(new String[]{"First", "Second", "Third"}));
@@ -25,9 +25,9 @@ public class ItemByNameAscComparatorTest {
     @Test
     public void compareReversed() {
         ArrayList<Item> list = new ArrayList<>(List.of(
-                new Item("1", "Second"),
-                new Item("2", "First"),
-                new Item("3", "Third")));
+                new Item("Second"),
+                new Item("First"),
+                new Item("Third")));
         list.sort(new ItemByNameAscComparator().reversed());
         assertThat(new String[]{list.get(0).getName(), list.get(1).getName(), list.get(2).getName()},
                 is(new String[]{"Third", "Second", "First"}));

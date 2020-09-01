@@ -49,10 +49,10 @@ public class FindByNameActionTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintStream def = System.out;
         System.setOut(new PrintStream(out));
-        Item item = new Item(tracker.generateId(), "fix bug");
+        Item item = new Item("fix bug");
         tracker.add(item);
-        tracker.add(new Item(tracker.generateId(), "i'll be back"));
-        Item item3 = new Item(tracker.generateId(), "fix bug");
+        tracker.add(new Item("i'll be back"));
+        Item item3 = new Item("fix bug");
         tracker.add(item3);
         FindByNameAction act = new FindByNameAction();
         act.execute(new StubInput(new String[] {"fix bug"}), tracker);

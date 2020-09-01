@@ -6,14 +6,12 @@ public class Item {
     private String id;
     private String name;
 
-    public Item(String id, String name) {
-        this.id = id;
+    public Item(String name) {
         this.name = name;
     }
 
-    public Item(String id, Item otherItem) {
+    public void setId(String id) {
         this.id = id;
-        this.name = otherItem.getName();
     }
 
     public String getId() {

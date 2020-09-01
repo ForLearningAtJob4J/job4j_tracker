@@ -10,7 +10,7 @@ public class ReplaceAction implements UserAction {
     public boolean execute(Input input, Store tracker) {
         String id = input.askStr("Enter id: ");
         String name = input.askStr("Enter new name: ");
-        Item item = new Item(id, name);
+        Item item = new Item(name);
         if (tracker.replace(id, item)) {
             System.out.println("Was successfully edited!");
         } else {

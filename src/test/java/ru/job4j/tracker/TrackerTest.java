@@ -45,7 +45,7 @@ public class TrackerTest {
     @Test
     public void whenAddNewItemThenTrackerHasSameItem() {
         tracker.clear();
-        Item item = new Item(tracker.generateId(), "test1");
+        Item item = new Item("test1");
         tracker.add(item);
         Item result = tracker.findById(item.getId());
         assertThat(result.getName(), is(item.getName()));
@@ -55,13 +55,13 @@ public class TrackerTest {
     public void whenFindAllThenReturnAll() {
         tracker.clear();
         ArrayList<Item> expected = new ArrayList<>();
-        Item item = new Item(tracker.generateId(), "test1");
+        Item item = new Item("test1");
         tracker.add(item);
         expected.add(item);
-        item = new Item(tracker.generateId(), "test2");
+        item = new Item("test2");
         tracker.add(item);
         expected.add(item);
-        item = new Item(tracker.generateId(), "test3");
+        item = new Item("test3");
         tracker.add(item);
         expected.add(item);
         assertThat(tracker.findAll(), is(expected));
@@ -71,13 +71,13 @@ public class TrackerTest {
     public void whenFindByNameThenReturnWithSameName() {
         tracker.clear();
         ArrayList<Item> expected = new ArrayList<>();
-        Item item = new Item(tracker.generateId(), "google");
+        Item item = new Item("google");
         tracker.add(item);
         expected.add(item);
-        item = new Item(tracker.generateId(), "google");
+        item = new Item("google");
         tracker.add(item);
         expected.add(item);
-        item = new Item(tracker.generateId(), "test3");
+        item = new Item("test3");
         tracker.add(item);
         assertThat(tracker.findByName("google"), is(expected));
     }
@@ -85,7 +85,7 @@ public class TrackerTest {
     @Test
     public void whenFindItemById() {
         tracker.clear();
-        Item item = new Item(tracker.generateId(), "test1");
+        Item item = new Item("test1");
         tracker.add(item);
         Item result = tracker.findById(item.getId());
         assertThat(result.getName(), is(item.getName()));
@@ -94,10 +94,10 @@ public class TrackerTest {
     @Test
     public void whenReplace() {
         tracker.clear();
-        Item bug = new Item(tracker.generateId(), "Bug");
+        Item bug = new Item("Bug");
         tracker.add(bug);
         String id = bug.getId();
-        Item bugWithDesc = new Item(id, "Bug with description");
+        Item bugWithDesc = new Item("Bug with description");
         tracker.replace(id, bugWithDesc);
         assertThat(tracker.findById(id).getName(), is("Bug with description"));
     }
@@ -105,7 +105,7 @@ public class TrackerTest {
     @Test
     public void whenDelete() {
         tracker.clear();
-        Item bug = new Item(tracker.generateId(), "Bug");
+        Item bug = new Item("Bug");
         tracker.add(bug);
         String id = bug.getId();
         tracker.delete(id);

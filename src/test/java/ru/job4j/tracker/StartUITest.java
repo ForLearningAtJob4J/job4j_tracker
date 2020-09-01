@@ -55,7 +55,7 @@ public class StartUITest {
     @Test
     public void whenReplaceItem() {
         tracker.clear();
-        Item item = new Item(tracker.generateId(), "new item");
+        Item item = new Item("new item");
         tracker.add(item);
         new ReplaceAction().execute(new StubInput(new String[]{item.getId(), "replaced item"}), tracker);
         Item replaced = tracker.findById(item.getId());
@@ -65,7 +65,7 @@ public class StartUITest {
     @Test
     public void whenDeleteItem() {
         tracker.clear();
-        Item item = new Item(tracker.generateId(), "new item");
+        Item item = new Item("new item");
         tracker.add(item);
         String id = item.getId();
         new DeleteAction().execute(new StubInput(new String[]{id}), tracker);

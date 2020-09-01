@@ -23,6 +23,7 @@ public class MemTracker implements Store {
      * @param item новая заявка
      */
     public Item add(Item item) {
+        item.setId(generateId());
         items.add(item);
         return item;
     }
@@ -32,7 +33,7 @@ public class MemTracker implements Store {
      * Так как у заявки нет уникальности полей, имени и описание. Для идентификации нам нужен уникальный ключ.
      * @return Уникальный ключ.
      */
-    public String generateId() {
+    private String generateId() {
         Random rm = new Random(System.nanoTime());
         return String.valueOf(abs(rm.nextLong()));
     }
@@ -69,9 +70,9 @@ public class MemTracker implements Store {
 
     public boolean replace(String id, Item item) {
         boolean result = false;
-        item = new Item(id, item);
         int index = indexOf(id);
         if (index != -1) {
+            item.setId(id);
             items.set(index, item);
             result = true;
         }

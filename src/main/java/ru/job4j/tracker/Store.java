@@ -4,7 +4,6 @@ import java.util.List;
 
 public interface Store extends AutoCloseable {
     void init();
-    String generateId();
     Item add(Item item);
     boolean replace(String id, Item item);
     boolean delete(String id);
