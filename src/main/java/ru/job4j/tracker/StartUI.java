@@ -33,7 +33,7 @@ public class StartUI {
         Input validate = new ValidateInput(
                 new ConsoleInput()
         );
-        try (Store tracker = new SqlTracker()) {
+        try (Store tracker = new SqlTracker(null)) {
             tracker.init();
 
             new StartUI().init(validate, tracker, new ArrayList<>(List.of(

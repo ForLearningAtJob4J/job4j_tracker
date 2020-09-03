@@ -1,12 +1,18 @@
 package ru.job4j.tracker;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -14,31 +20,39 @@ import static org.hamcrest.core.IsNull.nullValue;
 
 @RunWith(Parameterized.class)
 public class TrackerTest {
-    private Store tracker;
+    private static Store tracker;
 
     public TrackerTest(String s, Store store) {
         tracker = store;
     }
 
-    @Before
-    public void setUp() {
-        tracker.init();
-    }
+    public static Connection init() {
+        try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("app.properties")) {
+            Properties config = new Properties();
+            assert in != null;
+            config.load(in);
+            Class.forName(config.getProperty("driver-class-name"));
+            return DriverManager.getConnection(
+                    config.getProperty("url"),
+                    config.getProperty("username"),
+                    config.getProperty("password")
 
-    @After
-    public void cleanUp() {
-        try {
-            tracker.close();
+            );
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e);
         }
     }
 
+    @AfterClass
+    public static void annihilation() throws Exception {
+        tracker.close();
+    }
+
     @Parameterized.Parameters(name = "{0}")
-    public static Object[][] primeNumbers() {
+    public static Object[][] gens() throws SQLException {
         return new Object[][] {
                 {"MemTracker", new MemTracker()},
-                {"SqlTracker", new SqlTracker()}
+                {"SqlTracker", new SqlTracker(ConnectionRollback.create(init()))}
         };
     }
 

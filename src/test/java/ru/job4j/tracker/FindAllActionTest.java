@@ -1,13 +1,19 @@
 package ru.job4j.tracker;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
 import java.util.StringJoiner;
 
 import static org.hamcrest.core.Is.is;
@@ -15,31 +21,39 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class FindAllActionTest {
-    private Store tracker;
+    private static Store tracker;
 
-    public FindAllActionTest(String s, Store store) {
-        tracker = store;
+    public FindAllActionTest(String s, Store aTracker) {
+        tracker = aTracker;
     }
 
-    @Before
-    public void setUp() {
-        tracker.init();
+    @AfterClass
+    public static void annihilation() throws Exception {
+        tracker.close();
     }
 
-    @After
-    public void cleanUp() {
-        try {
-            tracker.close();
+    public static Connection init() {
+        try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("app.properties")) {
+            Properties config = new Properties();
+            assert in != null;
+            config.load(in);
+            Class.forName(config.getProperty("driver-class-name"));
+            return DriverManager.getConnection(
+                    config.getProperty("url"),
+                    config.getProperty("username"),
+                    config.getProperty("password")
+
+            );
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e);
         }
     }
 
     @Parameterized.Parameters(name = "{0}")
-    public static Object[][] primeNumbers() {
+    public static Object[][] gens() throws SQLException {
         return new Object[][] {
                 {"MemTracker", new MemTracker()},
-                {"SqlTracker", new SqlTracker()}
+                {"SqlTracker", new SqlTracker(ConnectionRollback.create(init()))}
         };
     }
 
