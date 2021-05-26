@@ -1,6 +1,8 @@
 package ru.job4j.tracker;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -11,23 +13,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.StringJoiner;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
-public class FindByNameActionTest {
+public class DeleteActionTest {
     private static Store tracker;
     private static PrintStream def;
     private static ByteArrayOutputStream out;
-    private static final String LS = System.lineSeparator();
-    private Item item, item3;
 
-    public FindByNameActionTest(String s, Store store) {
+    public DeleteActionTest(String s, Store store) {
         tracker = store;
     }
 
@@ -55,17 +54,6 @@ public class FindByNameActionTest {
         System.setOut(new PrintStream(out));
     }
 
-    @Before
-    public void prepareTracker() {
-        tracker.clear();
-        out.reset();
-        item = new Item("fix bug");
-        tracker.add(item);
-        tracker.add(new Item("i'll be back"));
-        item3 = new Item("fix bug");
-        tracker.add(item3);
-    }
-
     @AfterClass
     public static void annihilation() throws Exception {
         tracker.close();
@@ -81,55 +69,38 @@ public class FindByNameActionTest {
     }
 
     @Test
-    public void whenCheckOutput() {
+    public void executeWhenIdIsFound() {
+        tracker.clear();
         out.reset();
-        FindByNameAction act = new FindByNameAction();
-        act.execute(new StubInput(new String[] {"fix bug"}), tracker);
-        String expect = new StringJoiner(LS, "", LS)
-                .add("=== Begin ===")
-                .add(item.toString())
-                .add(item3.toString())
-                .add("=== End ===")
-                .toString();
-        assertThat(out.toString(), is(expect));
-    }
-
-
-    @Test
-    public void executeWhenItemsIsFoundByName() {
-        out.reset();
-        FindByNameAction findByNameAction = new FindByNameAction();
+        Item item = new Item("Replaced item");
+        tracker.add(item);
+        DeleteAction deleteAction = new DeleteAction();
 
         Input input = mock(Input.class);
 
-        when(input.askStr(any(String.class))).thenReturn("fix bug");
+        when(input.askStr(any(String.class))).thenReturn(item.getId());
 
-        findByNameAction.execute(input, tracker);
+        deleteAction.execute(input, tracker);
 
-        String expect = new StringJoiner(LS, "", LS)
-                .add("=== Begin ===")
-                .add(item.toString())
-                .add(item3.toString())
-                .add("=== End ===")
-                .toString();
-        assertThat(out.toString(), is(expect));
+        assertThat(out.toString(), is("Was successfully deleted!" + System.lineSeparator()));
+        assertThat(tracker.findAll().size(), is(0));
     }
 
     @Test
-    public void executeWhenItemsIsNotFoundByName() {
+    public void executeWhenIdIsNotFound() {
+        tracker.clear();
         out.reset();
-        FindByNameAction rep = new FindByNameAction();
+        Item item = new Item("Replaced item");
+        tracker.add(item);
+        DeleteAction deleteAction = new DeleteAction();
 
         Input input = mock(Input.class);
 
         when(input.askStr(any(String.class))).thenReturn("0");
 
-        rep.execute(input, tracker);
+        deleteAction.execute(input, tracker);
 
-        String expect = new StringJoiner(LS, "", LS)
-                .add("=== Begin ===")
-                .add("=== End ===")
-                .toString();
-        assertThat(out.toString(), is(expect));
+        assertThat(out.toString(), is("Task with specified ID was not found" + System.lineSeparator()));
+        assertThat(tracker.findAll().size(), is(1));
     }
 }

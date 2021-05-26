@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.StringJoiner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -20,14 +19,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
-public class FindByNameActionTest {
+public class FindByIdActionTest {
     private static Store tracker;
     private static PrintStream def;
     private static ByteArrayOutputStream out;
     private static final String LS = System.lineSeparator();
     private Item item, item3;
 
-    public FindByNameActionTest(String s, Store store) {
+    public FindByIdActionTest(String s, Store store) {
         tracker = store;
     }
 
@@ -81,55 +80,30 @@ public class FindByNameActionTest {
     }
 
     @Test
-    public void whenCheckOutput() {
+    public void executeWhenItemsIsFoundById() {
         out.reset();
-        FindByNameAction act = new FindByNameAction();
-        act.execute(new StubInput(new String[] {"fix bug"}), tracker);
-        String expect = new StringJoiner(LS, "", LS)
-                .add("=== Begin ===")
-                .add(item.toString())
-                .add(item3.toString())
-                .add("=== End ===")
-                .toString();
-        assertThat(out.toString(), is(expect));
-    }
-
-
-    @Test
-    public void executeWhenItemsIsFoundByName() {
-        out.reset();
-        FindByNameAction findByNameAction = new FindByNameAction();
+        FindByIdAction findByIdAction = new FindByIdAction();
 
         Input input = mock(Input.class);
 
-        when(input.askStr(any(String.class))).thenReturn("fix bug");
+        when(input.askStr(any(String.class))).thenReturn(item.getId());
 
-        findByNameAction.execute(input, tracker);
+        findByIdAction.execute(input, tracker);
 
-        String expect = new StringJoiner(LS, "", LS)
-                .add("=== Begin ===")
-                .add(item.toString())
-                .add(item3.toString())
-                .add("=== End ===")
-                .toString();
-        assertThat(out.toString(), is(expect));
+        assertThat(out.toString(), is(item.toString() + LS));
     }
 
     @Test
-    public void executeWhenItemsIsNotFoundByName() {
+    public void executeWhenItemsIsNotFoundById() {
         out.reset();
-        FindByNameAction rep = new FindByNameAction();
+        FindByIdAction findByIdAction = new FindByIdAction();
 
         Input input = mock(Input.class);
 
-        when(input.askStr(any(String.class))).thenReturn("0");
+        when(input.askStr(any(String.class))).thenReturn("-1");
 
-        rep.execute(input, tracker);
+        findByIdAction.execute(input, tracker);
 
-        String expect = new StringJoiner(LS, "", LS)
-                .add("=== Begin ===")
-                .add("=== End ===")
-                .toString();
-        assertThat(out.toString(), is(expect));
+        assertThat(out.toString(), is("Task with specified ID was not found" + LS));
     }
 }

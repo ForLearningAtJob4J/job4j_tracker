@@ -65,8 +65,10 @@ public class SqlTracker implements Store {
         try (PreparedStatement st = cn.prepareStatement("UPDATE items SET name = ? WHERE id = ?")) {
             st.setString(1, item.getName());
             st.setInt(2, Integer.parseInt(id));
-            st.executeUpdate();
-            return true;
+            int affectedRowsCount = st.executeUpdate();
+            if (affectedRowsCount == 1) {
+                return true;
+            }
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -77,8 +79,10 @@ public class SqlTracker implements Store {
     public boolean delete(String id) {
         try (PreparedStatement st = cn.prepareStatement("DELETE FROM items WHERE id = ?")) {
             st.setInt(1, Integer.parseInt(id));
-            st.executeUpdate();
-            return true;
+            int affectedRowsCount = st.executeUpdate();
+            if (affectedRowsCount == 1) {
+                return true;
+            }
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
         }
