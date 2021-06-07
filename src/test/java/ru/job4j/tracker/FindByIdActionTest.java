@@ -3,6 +3,7 @@ package ru.job4j.tracker;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -86,7 +87,7 @@ public class FindByIdActionTest {
 
         Input input = mock(Input.class);
 
-        when(input.askStr(any(String.class))).thenReturn(item.getId());
+        when(input.askInt(any(String.class))).thenReturn(item.getId());
 
         findByIdAction.execute(input, tracker);
 

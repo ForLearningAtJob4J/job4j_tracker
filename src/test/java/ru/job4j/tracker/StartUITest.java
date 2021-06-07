@@ -70,7 +70,7 @@ public class StartUITest {
         tracker.clear();
         Item item = new Item("new item");
         tracker.add(item);
-        new ReplaceAction().execute(new StubInput(new String[]{item.getId(), "replaced item"}), tracker);
+        new ReplaceAction().execute(new StubInput(new String[]{item.getId().toString(), "replaced item"}), tracker);
         Item replaced = tracker.findById(item.getId());
         assertThat(replaced.getName(), is("replaced item"));
     }
@@ -80,8 +80,8 @@ public class StartUITest {
         tracker.clear();
         Item item = new Item("new item");
         tracker.add(item);
-        String id = item.getId();
-        new DeleteAction().execute(new StubInput(new String[]{id}), tracker);
+        Integer id = item.getId();
+        new DeleteAction().execute(new StubInput(new String[]{id.toString()}), tracker);
         tracker.delete(id);
         assertThat(tracker.findById(id), is(nullValue()));
     }
@@ -112,7 +112,7 @@ public class StartUITest {
                 .add("Menu.")
                 .add("0. Stub action")
                 .toString();
-        assertThat(new String(out.toByteArray()), is(expect));
+        assertThat(out.toString(), is(expect));
         System.setOut(def);
     }
 }

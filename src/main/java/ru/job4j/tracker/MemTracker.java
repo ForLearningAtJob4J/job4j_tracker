@@ -34,12 +34,12 @@ public class MemTracker implements Store {
      * Так как у заявки нет уникальности полей, имени и описание. Для идентификации нам нужен уникальный ключ.
      * @return Уникальный ключ.
      */
-    private String generateId() {
+    private Integer generateId() {
         Random rm = new Random(System.nanoTime());
-        return String.valueOf(abs(rm.nextLong()));
+        return abs(rm.nextInt());
     }
 
-    private int indexOf(String id) {
+    private int indexOf(Integer id) {
         int rsl = -1;
         for (int index = 0; index < items.size(); index++) {
             if (items.get(index).getId().equals(id)) {
@@ -64,12 +64,12 @@ public class MemTracker implements Store {
         return newArray;
     }
 
-    public Item findById(String id) {
+    public Item findById(Integer id) {
         int index = indexOf(id);
         return index != -1 ? items.get(index) : null;
     }
 
-    public boolean replace(String id, Item item) {
+    public boolean replace(Integer id, Item item) {
         boolean result = false;
         int index = indexOf(id);
         if (index != -1) {
@@ -80,7 +80,7 @@ public class MemTracker implements Store {
         return result;
     }
 
-    public boolean delete(String id) {
+    public boolean delete(Integer id) {
         boolean result = false;
         int index = indexOf(id);
         if (index != -1) {

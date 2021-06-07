@@ -78,7 +78,7 @@ public class DeleteActionTest {
 
         Input input = mock(Input.class);
 
-        when(input.askStr(any(String.class))).thenReturn(item.getId());
+        when(input.askInt(any(String.class))).thenReturn(item.getId());
 
         deleteAction.execute(input, tracker);
 

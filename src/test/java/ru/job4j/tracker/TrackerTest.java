@@ -1,8 +1,6 @@
 package ru.job4j.tracker;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -110,7 +108,7 @@ public class TrackerTest {
         tracker.clear();
         Item bug = new Item("Bug");
         tracker.add(bug);
-        String id = bug.getId();
+        Integer id = bug.getId();
         Item bugWithDesc = new Item("Bug with description");
         tracker.replace(id, bugWithDesc);
         assertThat(tracker.findById(id).getName(), is("Bug with description"));
@@ -121,7 +119,7 @@ public class TrackerTest {
         tracker.clear();
         Item bug = new Item("Bug");
         tracker.add(bug);
-        String id = bug.getId();
+        Integer id = bug.getId();
         tracker.delete(id);
         assertThat(tracker.findById(id), is(nullValue()));
     }

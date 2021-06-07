@@ -79,7 +79,7 @@ public class ReplaceActionTest {
 
         Input input = mock(Input.class);
 
-        when(input.askStr("Enter id: ")).thenReturn(item.getId());
+        when(input.askInt("Enter id: ")).thenReturn(item.getId());
         when(input.askStr("Enter new name: ")).thenReturn(replacedName);
 
         rep.execute(input, tracker);

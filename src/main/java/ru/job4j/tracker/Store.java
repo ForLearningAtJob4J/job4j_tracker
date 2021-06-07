@@ -6,10 +6,10 @@ import java.util.List;
 public interface Store extends AutoCloseable {
     Connection init();
     Item add(Item item);
-    boolean replace(String id, Item item);
-    boolean delete(String id);
+    boolean replace(Integer id, Item item);
+    boolean delete(Integer id);
     void clear();
     List<Item> findAll();
     List<Item> findByName(String key);
-    Item findById(String id);
+    Item findById(Integer id);
 }
