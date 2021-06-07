@@ -1,6 +1,6 @@
 TRUNCATE TABLE items;
 
-SELECT setval('public.items_id_seq', 1, true);
+SELECT setval('public.items_id_seq', 0, true);
 
 INSERT INTO
     items (name)
