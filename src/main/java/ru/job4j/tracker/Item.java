@@ -11,8 +11,8 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    String description;
-    Timestamp created;
+    private String description;
+    private Timestamp created;
 
     public Item(String name) {
         this.name = name;
